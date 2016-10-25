@@ -29,3 +29,5 @@ app.get('/api/index', function(req, res) {
 });
 
 app.listen(process.env.PORT || 1337);
+
+module.exports = app;
