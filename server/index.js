@@ -1,28 +1,33 @@
 'use strict';
 
 // debug ====================================================================
-var debug = require('debug');
+const debug = require('debug');
 debug.enable('server:*');
-var log = debug('server:log');
-var info = debug('server:info');
-var error = debug('server:error');
+const log = debug('server:log');
+const info = debug('server:info');
+const error = debug('server:error');
 
 // set up ===================================================================
+const Promise = require('bluebird');
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const expressSession = require('express-session');
 const MongoStore = require('connect-mongo')(expressSession);
 const passport = require('passport');
 const flash = require('flash');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const db = require('./config/db.js');
 const password = require('./config/secret.js');
-const Promise = require('bluebird');
-const LocalStrategy = require('passport-local').Strategy;
-const port = process.env.PORT || 8000;
+
+const https = require('https');
+const broadcasting = require('./broadcasting/broadcasting');
+
+const port = process.env.PORT || 8443;
 
 const app = express();
 
@@ -45,7 +50,7 @@ app.use(expressSession({
   secret: password.phrase,
   resave: true,
   saveUninitialized: false,
-  cookie: { 
+  cookie: {
     secure: false,
     maxAge: 30 * 24 * 60 * 60
   },
@@ -74,13 +79,24 @@ app.get('*', (req, res, next) =>
   res.sendFile(path.resolve(__dirname, '../public', 'index.html'))
 );
 
-// listen (start app with node / nodemon index.js) ================================
-app.listen(port, err => {
+// key/certificate for https server
+const sslPath = process.env.SSL_PATH || '/etc/letsencrypt/live/radradio.stream';
+const options = {
+  key: fs.readFileSync(sslPath + '/privkey.pem'),
+  cert: fs.readFileSync(sslPath + '/fullchain.pem')
+};
+
+// secure server setup
+const server = https.createServer(options, app);
+broadcasting.startWss(server);
+
+// start server
+server.listen(port, err => {
   if (err) {
     error('Error while trying to start the server (port already in use maybe?)');
     return err;
   }
-  info(`server listening on port ${port}`);
+  info(`secure server listening on port ${port}`);
 });
 
 module.exports = app;
