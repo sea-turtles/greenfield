@@ -29,7 +29,7 @@ class NavBar extends React.Component {
           <ul className="navList">
             <li><Link to="/recorder" className="navItem">Recorder</Link></li>
             <li><Link to="/player" className="navItem">Player</Link></li>
-            <li><a href="#" className="navItem">About</a></li>
+            <li><Link to="/about" className="navItem">About</Link></li>
             <li><input placeholder="Search..." className="navItem"></input></li>
             <li><a href="#" className="navItem">Login</a></li>
             <li><Link to="/register" className="navItem">Register</Link></li>
