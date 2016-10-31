@@ -2,15 +2,13 @@ import styles from 'style';
 import React from 'react';
 import { Link } from 'react-router';
 import $ from 'jquery';
+import auth from '../lib/auth';
+
 
 const logout = function(e) {
   delete window.localStorage.user;
   e.preventDefault();
-  var url = '/logout';
-  $.get(url)
-    .success(function(data) {
-      window.location = data;
-    });
+  auth.logout();
 }; 
 
 class NavBar extends React.Component {
@@ -18,7 +16,7 @@ class NavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      authenticated: false
     };
   }
 
@@ -31,7 +29,6 @@ class NavBar extends React.Component {
             <li><Link to="/recorder" className="navItem">Recorder</Link></li>
             <li><Link to="/player" className="navItem">Player</Link></li>
             <li><a href="#" className="navItem">About</a></li>
-            <li><input placeholder="Search..." className="navItem"></input></li>
             <li><Link to="/login" className="navItem">Login</Link></li>
             <li><Link to="/register" className="navItem">Register</Link></li>
             <li onClick={logout}><a href="#" target="_self" className="navItem">Logout</a></li>
