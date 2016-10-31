@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import $ from 'jquery';
 
 const logout = function(e) {
+  delete window.localStorage.user;
   e.preventDefault();
   var url = '/logout';
   $.get(url)
@@ -14,12 +15,12 @@ const logout = function(e) {
 
 class NavBar extends React.Component {
 
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
+  constructor(props) {
+    super(props);
+    this.state = {
 
-  //   };
-  // }
+    };
+  }
 
   render() {
     return (
@@ -31,7 +32,7 @@ class NavBar extends React.Component {
             <li><Link to="/player" className="navItem">Player</Link></li>
             <li><a href="#" className="navItem">About</a></li>
             <li><input placeholder="Search..." className="navItem"></input></li>
-            <li><a href="#" className="navItem">Login</a></li>
+            <li><Link to="/login" className="navItem">Login</Link></li>
             <li><Link to="/register" className="navItem">Register</Link></li>
             <li onClick={logout}><a href="#" target="_self" className="navItem">Logout</a></li>
           </ul>

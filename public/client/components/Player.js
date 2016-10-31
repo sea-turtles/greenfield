@@ -9,6 +9,7 @@ class Player extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: localStorage.user,
       playId: null,
       playBtn: '▶',
       className: 'round-button-play',
@@ -23,7 +24,7 @@ class Player extends React.Component {
   }
 
   init() {
-    var query = {"username": ".*"};
+    var query = {'username': '.*'};
     var context = this;
 
     console.log('init');
@@ -51,13 +52,13 @@ class Player extends React.Component {
   }
 
   handleClick(item) {
-    console.log('click', item)
+    console.log('click', item);
     var node = document.getElementsByClassName('audioOutput')[0];
     var context = this;
 
     if (this.state.status === 'IDLE') {
-        audioPlayer.start(item.id, node);
-        context.setState({playBtn: '■', className: 'round-button-stop', currentTrack: item });
+      audioPlayer.start(item.id, node);
+      context.setState({playBtn: '■', className: 'round-button-stop', currentTrack: item });
 
     } else {
       if (item === this.state.currentTrack) {
@@ -73,11 +74,14 @@ class Player extends React.Component {
   render() {
     return (
       <div className="player">
-        <h1>Player</h1>
+        <h1>Player {this.state.user}</h1>
         <div className="controls">
           <div className="round-button">
             <div className="round-button-circle">
-              <div onClick={() => {this.handleClick(this.state.currentTrack)}} className={this.state.className}>{this.state.playBtn}</div>
+              <div onClick={() => { this.handleClick(this.state.currentTrack); }} 
+                className={this.state.className}>
+                {this.state.playBtn}
+              </div>
             </div>
           </div>
           <div className="trackInfo">
