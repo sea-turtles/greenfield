@@ -25,17 +25,11 @@ class Home extends React.Component {
 	init() {
 	  var context = this;
 
-	  console.log('home init');
-	  //remove once data works
-    // context.setState({ users: fakeData });
-
+	  //Populate front page with users
 	  $.get('/api/users', data => {
-	    console.log('homeList received', data);
 	    context.setState({ users: data });
 	  });
 	}
-
-	// Home.contextTypes.router = React.PropTypes.func.isRequired
 
 	handleClick(user) {
 		const path = `/player/${user.username}`;
