@@ -427,7 +427,8 @@ h1 {
 }
 
 #desc {
-	min-height: 8.5em;
+	min-height: 5.5em;
+	height: 5.5em;
 }
 
 .recorder-status {
