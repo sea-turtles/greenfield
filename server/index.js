@@ -70,8 +70,101 @@ app.use(flash());
 // routes =========================================================================
 app.use(express.static(__dirname + '/../public'));
 
+<<<<<<< HEAD
 require('./routes/auth.js')(app);
 require('./routes/kurento.js')(app);
+=======
+// login existing user
+app.post('/api/login', (req, res, next) => {
+  passport.authenticate('local', function(err, user, info) {
+    if (user) {
+      req.logIn(user, function(err) {
+        if (err) { console.error('Login fail despite passing auth', err); }
+        // res.redirect not working here, set up success property on login page to redirect
+        // TODO: React Router with authentication
+        return res.end('/recorder');
+      });
+    }
+    if (info) {
+      console.log('more information:', info);
+    }
+  })(req, res, next);
+});
+
+// create new user
+app.post('/api/register', (req, res) => {
+  User.findOne(req.body.username, function(err, data) {
+    if (err) { console.error('Not able to search DB', err); }
+    if (data.length > 0) {
+      console.log('username already exists!');
+      return res.end('/register');
+    } else {
+      User.addUser({
+        username: req.body.username,
+        password: req.body.password,
+        email: req.body.email
+      }, function(err, data) {
+        if (err) { console.error('Error creating user', err); }
+        console.log('created new user:', req.body.username);
+        req.logIn(data, function(err) {
+          if (err) { console.error('Error logging in', err); }
+          console.log('logged in as', req.body.username);
+          return res.end('/recorder');
+        });
+      });
+    }
+  });
+});
+
+// create new recording item with metadata, get back recording endpoint url
+app.post('/api/recording', (req, res) =>
+  mediaRepo.createItem(req.body).then(data => res.status(200).json(data)).catch(err => res.status(500).json(err))
+);
+
+// get recording url and metadata from id
+app.get('/api/recording/:id', (req, res) =>
+  mediaRepo.getItem(req.params.id).then(data => res.status(200).json(data)).catch(err => res.status(500).json(err))
+);
+
+// delete recording from id
+app.delete('/api/recording/:id', (req, res) =>
+  mediaRepo.deleteItem(req.params.id).then(data => res.status(200)).catch(err => res.status(500).json(err))
+);
+
+// update recording metadata from id
+app.put('/api/recording/:id', (req, res) =>
+  mediaRepo.updateItem(req.params.id, req.body).then(data => res.status(200)).catch(err => res.status(500).json(err))
+);
+
+// get list of recordings (returns list of recording IDs)
+app.post('/api/recordings', (req, res) =>
+  mediaRepo.findItems(req.body).then(data => res.status(200).json(data)).catch(err => res.status(500).json(err))
+);
+
+// get a list of users
+app.get('/api/users', (req, res) => {
+
+  console.log('get users')
+  User.findAll((err, users) => {
+    if (err) { return done(err); }
+    console.log('users gotten', users)
+    res.send(users);
+  });
+});
+
+app.get('/login', (req, res) =>
+  res.sendFile(path.resolve(__dirname, '../public', 'index.html'))
+);
+
+app.get('/register', (req, res) =>
+  res.sendFile(path.resolve(__dirname, '../public', 'index.html'))
+);
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  return res.end('/login');
+});
+>>>>>>> 3190c14c10dad7131647d09863c38e521c60401e
 
 // handle every other route with index.html
 app.get('*', (req, res, next) =>

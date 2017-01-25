@@ -10,23 +10,20 @@ const info = myDebug('Home:info');
 const error = myDebug('Home:error');
 
 class Home extends React.Component {
-
-  constructor(props, context) {
-    super(props, context);
-    context.router;
-    console.log('props', props);
-    this.state = {
-      recordingState: false,
-      recordId: null,
-      recordBtn: '●',
-      className: 'round-button-record',
-      status: null,
-      users: []
-    };
-  }
+	constructor(props, context) {
+	  super(props);
+	  context.router;
+	  this.state = {
+	    recordingState: false,
+	    recordId: null,
+	    recordBtn: '●',
+	    className: 'round-button-record',
+	    status: null,
+	    users: []
+	  };
+	}
 
   componentDidMount() {
-    console.log('Mounted');
     this.init();
   }
 
@@ -42,7 +39,6 @@ class Home extends React.Component {
       {username: 'LeoLaporte', pic: 'client/img/user8.jpg', description: 'Lets fix your computer!', id: 8}
     ];
 
-    console.log('home init');
     //remove once data works
     this.setState({ users: fakeData });
 
@@ -51,10 +47,23 @@ class Home extends React.Component {
       // context.setState({ users: data });
     });
   }
+	// init() {
+	//   var context = this;
+
+	//   //Populate front page with users
+	//   $.get('/api/users', data => {
+	//     context.setState({ users: data });
+	//   });
+	// }
+
+	// handleClick(user) {
+	// 	const path = `/player/${user.username}`;
+	// 	console.log('click', path)
+	// 	this.context.router.push(path);
+	// }
 
   handleClick(user) {
     const path = `/player/${user.username}`;
-    console.log('ROute', this.context);
     this.context.router.push(path);
   }
 

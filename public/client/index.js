@@ -11,6 +11,8 @@ import NavBar from 'NavBar';
 import Recorder from 'Recorder';
 import Player from 'Player';
 import $ from 'jquery';
+import User from 'User';
+import About from 'About';
 
 let myDebug = require('debug');
 //myDebug.enable('index:*');
